@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from datetime import date
 
 # Create your models here.
 # FEATURES = (
@@ -11,10 +12,20 @@ from django.urls import reverse
 #     ('t', 'tree shade'),
 # )
 
+class Feature(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+    
+    def get_absolute_url(self):
+        return reverse('features_detail', kwards={'pk': self.id})
+
 class Park(models.Model):  # Note that parens are optional if not inheriting from another class
     name = models.CharField(max_length=100)
     neighborhood = models.CharField(max_length=100)
     description = models.TextField(max_length=500)
+    features = models.ManyToManyField(Feature)
 
     def __str__(self):
         return self.name
