@@ -2,14 +2,14 @@ from django.db import models
 from django.urls import reverse
 
 # Create your models here.
-FEATURES = (
-    ('w', 'water fountain'),
-    ('s', 'sidewalks'),
-    ('g', 'grassy field'),
-    ('b', 'trashcans'),
-    ('p', 'port-a-potty'),
-    ('t', 'tree shade'),
-)
+# FEATURES = (
+#     ('w', 'water fountain'),
+#     ('s', 'sidewalks'),
+#     ('g', 'grassy field'),
+#     ('b', 'trashcans'),
+#     ('p', 'port-a-potty'),
+#     ('t', 'tree shade'),
+# )
 
 class Park(models.Model):  # Note that parens are optional if not inheriting from another class
     name = models.CharField(max_length=100)
@@ -24,16 +24,12 @@ class Park(models.Model):  # Note that parens are optional if not inheriting fro
 
 class Visit(models.Model):
     date = models.DateField('date of Visit')
-    feature = models.CharField(
-        max_length=1,
-        choices=FEATURES,
-        default=FEATURES[0][0]
-    )
+    comment = models.TextField(max_length=180, default="none")
     
     park = models.ForeignKey(Park, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.get_feature_display()} on {self.date}"
+        return f"{self.comment} on {self.date}"
 
         class Meta:
             ordering = ['-date']

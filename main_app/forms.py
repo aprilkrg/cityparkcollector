@@ -4,4 +4,4 @@ from .models import Visit
 class VisitForm(ModelForm):
   class Meta:
     model = Visit
-    fields = ['date', 'feature']
+    fields = ['date', 'comment']

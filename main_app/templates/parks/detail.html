@@ -29,13 +29,13 @@
 
     <table class="striped">
       <thead>
-        <tr><th>Visit Date</th><th>Favorite Feature</th></tr>
+        <tr><th>Visit Date</th><th>Comment</th></tr>
       </thead>
       <tbody>
         {% for visit in park.visit_set.all %}
           <tr>
             <td>{{visit.date}}</td>
-            <td>{{visit.get_feature_display}}</td>
+            <td>{{visit.comment}}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -52,8 +52,8 @@
     setDefaultDate: true,
     autoClose: true
   });
-  const selectEl = document.getElementById('id_feature');
-  M.FormSelect.init(selectEl);
+  // const selectEl = document.getElementById('id_comment');
+  // M.FormSelect.init(selectEl);
 </script>
 
   {% endblock %}
