@@ -1,16 +1,7 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 from datetime import date
-
-# Create your models here.
-# FEATURES = (
-#     ('w', 'water fountain'),
-#     ('s', 'sidewalks'),
-#     ('g', 'grassy field'),
-#     ('b', 'trashcans'),
-#     ('p', 'port-a-potty'),
-#     ('t', 'tree shade'),
-# )
 
 class Feature(models.Model):
     name = models.CharField(max_length=50)
@@ -36,7 +27,7 @@ class Park(models.Model):  # Note that parens are optional if not inheriting fro
 class Visit(models.Model):
     date = models.DateField('date of Visit')
     comment = models.TextField(max_length=180, default="none")
-    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     park = models.ForeignKey(Park, on_delete=models.CASCADE)
 
     def __str__(self):
