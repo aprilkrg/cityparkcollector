@@ -24,9 +24,10 @@
           <li><a href="{% url 'features_create' %}">Add a Feature</a></li>
           <li><a href="{% url 'features_index' %}">View All Features</a></li>
           <li><a href="{% url 'parks_create' %}">Add a Park</a></li>
-          <li><a href="{% url 'parks' %}">View All My Parks</a></li>
+          <li><a href="{% url 'parks' %}">View All Parks</a></li>
           <li><a href="{% url 'logout' %}">Log Out</a></li>
         {% else %}
+          <li><a href="{% url 'signup' %}">Sign Up</a></li>
           <li><a href="{% url 'login' %}">Log In</a></li>
         {% endif %}
         </ul>

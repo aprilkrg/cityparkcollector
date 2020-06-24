@@ -12,11 +12,12 @@ class Feature(models.Model):
     def get_absolute_url(self):
         return reverse('features_detail', kwargs={'pk': self.id})
 
-class Park(models.Model):  # Note that parens are optional if not inheriting from another class
+class Park(models.Model):  
     name = models.CharField(max_length=100)
     neighborhood = models.CharField(max_length=100)
     description = models.TextField(max_length=500)
     features = models.ManyToManyField(Feature)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -26,9 +27,9 @@ class Park(models.Model):  # Note that parens are optional if not inheriting fro
 
 class Visit(models.Model):
     date = models.DateField('date of Visit')
-    comment = models.TextField(max_length=180, default="none")
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.TextField(max_length=180, default='none')
     park = models.ForeignKey(Park, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.comment} on {self.date}"

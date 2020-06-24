@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
 import uuid
 import boto3
 from .models import Park, Feature, Photo
@@ -10,25 +14,6 @@ from .forms import VisitForm
 S3_BASE_URL = 'https://s3.us-west-1.amazonaws.com/'
 BUCKET = 'cityparkcollector-bucket'
 
-def add_photo(request, park_id):
-    # photo-file will be the "name" attribute on the <input type="file">
-    photo_file = request.FILES.get('photo-file', None)
-    if photo_file:
-        s3 = boto3.client('s3')
-        # need a unique "key" for S3 / needs image file extension too
-        key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
-        # just in case something goes wrong
-        try:
-            s3.upload_fileobj(photo_file, BUCKET, key)
-            # build the full url string
-            url = f"{S3_BASE_URL}{BUCKET}/{key}"
-            # we can assign to park_id or park (if you have a park object)
-            photo = Photo(url=url, park_id=park_id)
-            photo.save()
-        except:
-            print('An error occurred uploading file to S3')
-    return redirect('detail', park_id=park_id)
-
 # Create your views here.
 def home(request):
     return render(request, 'home.html')
@@ -36,10 +21,15 @@ def home(request):
 def about(request):
     return render(request, 'about.html')
 
-def parks_index(request):
-    parks = Park.objects.all()
-    return render(request, 'parks/index.html', {'parks': parks})
+# @login_required
+# def parks_index(request):
+#     # parks = Park.objects.all()
+#     # ^^^ this code will make all parks appear ^^^
+#     parks = Park.objects.filter(user=request.user)
+#     # ^^^ this code will make only the parks the user has created appear ^^^
+#     return render(request, 'parks/index.html', {'parks': parks})
 
+@login_required
 def parks_detail(request, park_id):
     park = Park.objects.get(id=park_id)
     features_park_doesnt_have = Feature.objects.exclude(id__in = park.features.all().values_list('id'))
@@ -50,10 +40,7 @@ def parks_detail(request, park_id):
         'features': features_park_doesnt_have
     })
 
-def assoc_feature(request, park_id, feature_id):
-    Park.objects.get(id=park_id).features.add(feature_id)
-    return redirect('detail', park_id=park_id)
-
+@login_required
 def add_visit(request, park_id):
     form = VisitForm(request.POST)
     if form.is_valid():
@@ -66,6 +53,32 @@ def add_visit(request, park_id):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+@login_required
+def add_photo(request, park_id):
+    photo_file = request.FILES.get('photo-file', None)
+    if photo_file:
+        s3 = boto3.client('s3')
+        # need a unique "key" for S3 / needs image file extension too
+        key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+        try:
+            s3.upload_fileobj(photo_file, BUCKET, key)
+            url = f"{S3_BASE_URL}{BUCKET}/{key}"
+            photo = Photo(url=url, park_id=park_id)
+            photo.save()
+        except:
+            print('An error occurred uploading file to S3')
+    return redirect('detail', park_id=park_id)
+
+@login_required
+def assoc_feature(request, park_id, feature_id):
+    Park.objects.get(id=park_id).features.add(feature_id)
+    return redirect('detail', park_id=park_id)
+
+@login_required
+def unassoc_feature(request, park_id, feature_id):
+    Park.objects.get(id=park_id).features.remove(feature_id)
+    return redirect('detail', park_id=park_id)
+
 # class VisitCreate(CreateView):
 #     model = VisitForm
 #     fields = '__all__'
@@ -73,34 +86,59 @@ def add_visit(request, park_id):
 #     def form_valid(self, form):
 #         form.instance.user = self.request.user
 #         return super().form_valid(form)
+class ParkList(LoginRequiredMixin, ListView):
+    model = Park
 
-class FeatureList(ListView):
+class FeatureList(LoginRequiredMixin, ListView):
     model = Feature
 
-class FeatureDetail(DetailView):
+class FeatureDetail(LoginRequiredMixin, DetailView):
     model = Feature
 
-class FeatureCreate(CreateView):
+class FeatureCreate(LoginRequiredMixin, CreateView):
     model = Feature
     fields = '__all__'
 
-class FeatureUpdate(UpdateView):
+class FeatureUpdate(LoginRequiredMixin, UpdateView):
     model = Feature
     fields = ['name']
 
-class FeatureDelete(DeleteView):
+class FeatureDelete(LoginRequiredMixin, DeleteView):
     model = Feature
     success_url = '/features/'
 
-class ParkCreate(CreateView):
+class ParkCreate(LoginRequiredMixin, CreateView):
     model = Park
     fields = '__all__'
 
-class ParkUpdate(UpdateView):
+    def form_valid(self, form):
+    # Assign the logged in user (self.request.user)
+        form.instance.user = self.request.user
+    # Let the CreateView do its usual
+        return super().form_valid(form)
+
+class ParkUpdate(LoginRequiredMixin, UpdateView):
     model = Park
     fields = '__all__'
 
-class ParkDelete(DeleteView):
+class ParkDelete(LoginRequiredMixin, DeleteView):
     model = Park
     success_url = '/parks/'
 
+def signup(request):
+    error_message = ''
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('index')
+        else:
+            error_message = 'Invalid sign up - try again'
+    # A bad POST or a GET request, so render signup.html with an empty form
+    form = UserCreationForm()
+    context = {
+        'form': form, 
+        'error_message': error_message
+    }
+    return render(request, 'registration/signup.html', context)

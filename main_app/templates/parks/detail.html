@@ -19,9 +19,9 @@
     </div>
     
     {% for photo in park.photo_set.all %}
-    <img class="responsive-img card-panel" src="{{photo.url}}">
+      <img class="responsive-img card-panel" src="{{photo.url}}">
     {% empty %}
-    <div class="card-panel teal-text center-align">No Photos Uploaded</div>
+      <div class="card-panel teal-text center-align">No Photos Uploaded</div>
     {% endfor %}
 
     <form action="{% url 'add_photo' park.id %}" enctype="multipart/form-data" method="POST" class="card-panel">
@@ -39,16 +39,17 @@
       {{ visit_form.as_p }}
       <input type="submit" class="btn" value="Add Visit">
     </form>    
-
+    <br>
     <table class="striped">
       <thead>
-        <tr><th>Visit Date</th><th>Comment</th></tr>
+        <tr><th>Visit Date</th><th>Comment</th><th>User</th></tr>
       </thead>
       <tbody>
         {% for visit in park.visit_set.all %}
           <tr>
             <td>{{visit.date}}</td>
             <td>{{visit.comment}}</td>
+            <td>{{visit.user}}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -68,6 +69,12 @@
             <span class="card-title">
               {{ feature.name }}
             </span>
+          </div>
+          <div class="card-action">
+            <form action="{% url 'unassoc_feature' park.id feature.id %}" method="post">
+                {% csrf_token %}
+              <button type="submit" class="btn">Remove</button>
+            </form>
           </div>
         </div>
       {% endfor %}
@@ -108,7 +115,7 @@
     setDefaultDate: true,
     autoClose: true
   });
-  // const selectEl = document.getElementById('id_comment');
+  // const selectEl = document.getElementById('id_feature');
   // M.FormSelect.init(selectEl);
 </script>
 

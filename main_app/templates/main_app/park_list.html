@@ -1,9 +1,9 @@
-<!-- {% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block content %}
 
 <h1>City Park List</h1>
 
-{% for park in parks %}
+{% for park in park_list %}
 <a href="{% url 'detail' park.id %}">
     <div class="card">
       <div class="card-content">
@@ -15,4 +15,4 @@
   </div>
 {% endfor %}
 
-{% endblock %} -->
+{% endblock %}
