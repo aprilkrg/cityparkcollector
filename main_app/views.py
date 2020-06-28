@@ -64,11 +64,15 @@ def add_visit(request, park_id):
         new_visit = form.save(commit=False)
         new_visit.park_id = park_id
         new_visit.save()
-    return redirect('detail', park_id=park_id)
+    return redirect(
+        'detail', 
+        park_id=park_id, 
+        # user_id=user_id
+    )
 
-    # def form_valid(self, form):
-    #     form.instance.user = self.request.user
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 class VisitCreate(CreateView):
     model = VisitForm

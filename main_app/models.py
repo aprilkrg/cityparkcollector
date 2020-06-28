@@ -1,16 +1,16 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from datetime import date
 
 class Visit(models.Model):
     date = models.DateField('Date of Visit')
     comment = models.TextField(max_length=180, default='none')
-    user = models.OneToOneRel(
-        User,
-        on_delete=models.CASCADE
-    )
-
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # def user_id(self):
+    #     return self.user_id
+    
     def __str__(self):
         return f"{self.comment} on {self.date}"
 
