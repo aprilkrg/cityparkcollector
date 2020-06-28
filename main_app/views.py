@@ -70,17 +70,17 @@ def add_visit(request, park_id):
     #     form.instance.user = self.request.user
     #     return super().form_valid(form)
 
-# class VisitCreate(CreateView):
-#     model = VisitForm
-#     fields = '__all__'
+class VisitCreate(CreateView):
+    model = VisitForm
+    fields = '__all__'
 
-#     def form_valid(self, form):
-#         form.instance.user = self.request.user
-#         return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 class ParkCreate(LoginRequiredMixin, CreateView):
     model = Park
-    fields = ['name', 'neighborhood', 'description', 'feature']
+    fields = ['name', 'neighborhood', 'description']
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -88,7 +88,7 @@ class ParkCreate(LoginRequiredMixin, CreateView):
 
 class ParkUpdate(LoginRequiredMixin, UpdateView):
     model = Park
-    fields = ['neighborhood', 'description', 'feature']
+    fields = ['neighborhood', 'description']
 
 class ParkDelete(LoginRequiredMixin, DeleteView):
     model = Park
@@ -110,6 +110,7 @@ def unassoc_feature(request, park_id, feature_id):
 class FeatureCreate(LoginRequiredMixin, CreateView):
     model = Feature
     fields = '__all__'
+    success_url = '/features/'
 
 class FeatureDetail(LoginRequiredMixin, DetailView):
     model = Feature

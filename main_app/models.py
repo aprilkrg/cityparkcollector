@@ -3,6 +3,20 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from datetime import date
 
+class Visit(models.Model):
+    date = models.DateField('Date of Visit')
+    comment = models.TextField(max_length=180, default='none')
+    user = models.OneToOneRel(
+        User,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return f"{self.comment} on {self.date}"
+
+    class Meta:
+        ordering = ['-date']
+
 class Feature(models.Model):
     name = models.CharField(max_length=50)
 
@@ -24,17 +38,6 @@ class Park(models.Model):
 
     def get_absolute_url(self):
         return reverse('detail', kwargs={'park_id': self.id})
-
-class Visit(models.Model):
-    date = models.DateField('Date of Visit')
-    comment = models.TextField(max_length=180, default='none')
-    park = models.ForeignKey(Park, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.comment} on {self.date}"
-
-    class Meta:
-        ordering = ['-date']
 
 class Photo(models.Model):
     url = models.CharField(max_length=200)
