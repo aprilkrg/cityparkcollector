@@ -67,20 +67,22 @@ def add_visit(request, park_id):
     return redirect(
         'detail', 
         park_id=park_id, 
-        # user_id=user_id
+        user_id=user_id
     )
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class VisitCreate(CreateView):
-    model = VisitForm
-    fields = '__all__'
+#  ^^^ function for create visit
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+# class VisitCreate(CreateView):
+#     model = VisitForm
+#     fields = '__all__'
+
+#     def form_valid(self, form):
+#         form.instance.user = self.request.user
+#         return super().form_valid(form)
 
 class ParkCreate(LoginRequiredMixin, CreateView):
     model = Park

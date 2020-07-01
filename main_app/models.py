@@ -8,8 +8,6 @@ class Visit(models.Model):
     date = models.DateField('Date of Visit')
     comment = models.TextField(max_length=180, default='none')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # def user_id(self):
-    #     return self.user_id
     
     def __str__(self):
         return f"{self.comment} on {self.date}"

@@ -10,6 +10,9 @@ urlpatterns = [
     path('parks/<int:pk>/update/', views.ParkUpdate.as_view(), name='parks_update'),
     path('parks/<int:pk>/delete/', views.ParkDelete.as_view(), name='parks_delete'),
     path('parks/<int:park_id>/add_visit', views.add_visit, name='add_visit'),
+    # ^^^ function view for visit creation
+    # path('parks/<int:pk>/create_visit', views.VisitCreate.as_view(), name='visit_create'),
+    #  ^^^ CBV for visit creation
     path('parks/<int:park_id>/add_photo', views.add_photo, name='add_photo'),
     path('parks/<int:park_id>/assoc_feature/<int:feature_id>/', views.assoc_feature, name='assoc_feature'),
     path('parks/<int:park_id>/unassoc_feature/<int:feature_id>/', views.unassoc_feature, name='unassoc_feature'),
