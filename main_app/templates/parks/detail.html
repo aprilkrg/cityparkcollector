@@ -42,14 +42,18 @@
     <br>
     <table class="striped">
       <thead>
-        <tr><th>Visit Date</th><th>Comment</th><th>User</th></tr>
+        <tr>
+          <th>Visit Date</th>
+          <th>Comment</th>
+          <!-- <th>User</th> -->
+        </tr>
       </thead>
       <tbody>
         {% for visit in park.visit_set.all %}
           <tr>
             <td>{{visit.date}}</td>
             <td>{{visit.comment}}</td>
-            <td>{{visit.user}}</td>
+            <!-- <td>{{request.user}}</td> -->
           </tr>
         {% endfor %}
       </tbody>

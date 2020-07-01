@@ -27,10 +27,9 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('index')
+            return redirect('parks')
         else:
             error_message = 'Invalid sign up - try again'
-    # A bad POST or a GET request, so render signup.html with an empty form
     form = UserCreationForm()
     context = {
         'form': form, 
@@ -60,19 +59,15 @@ def parks_detail(request, park_id):
 @login_required
 def add_visit(request, park_id):
     form = VisitForm(request.POST)
+    form.instance.user = request.user
     if form.is_valid():
         new_visit = form.save(commit=False)
         new_visit.park_id = park_id
         new_visit.save()
     return redirect(
         'detail', 
-        park_id=park_id, 
-        user_id=user_id
+        park_id=park_id
     )
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
 
 #  ^^^ function for create visit
 
