@@ -30,3 +30,16 @@ CREATE DATABASE cityparkcollector;
 python3 manage.py runserver
 ```
 
+* Make and Migrate dcb changes
+```bash
+python3 manage.py makemigrations
+python3 manage.py migrate
+```
+
+
+ERRORS:
+* photo upload
+
+CSS:
+* park detail page (margin, padding)
+* nav bar in a row
