@@ -43,3 +43,7 @@ ERRORS:
 CSS:
 * park detail page (margin, padding)
 * nav bar in a row
+
+CODE:
+* change tables and associations, allow for multiple descriptions of each park, and scroll through them lilke reviews on the page
+
